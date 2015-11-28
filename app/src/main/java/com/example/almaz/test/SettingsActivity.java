@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 
 
 public class SettingsActivity extends AppCompatActivity {
+
     public final String SEX = "SEX";
     public final String CITY = "CITY";
     public static final String APP_PREFERENCES = "mySettings";

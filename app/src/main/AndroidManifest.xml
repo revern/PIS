@@ -34,11 +34,6 @@
         </provider>
 
         <activity
-            android:name=".ClothesShowActivity"
-            android:label="@string/title_activity_clothes_show"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" >
