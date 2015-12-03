@@ -183,13 +183,13 @@ public class ClothesProvider extends ContentProvider {
 
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(DB_CREATE);
-            db.insert(CLOTHES_TABLE, null, addNewRow("T-shirt", "body", 5, false, true, true, false, false, false, R.drawable.t_shirt, true, true));
+            db.insert(CLOTHES_TABLE, null, addNewRow("t-shirt", "body", 5, false, true, true, false, false, false, R.drawable.t_shirt, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("cap", "head", 30, false, true, true, false, false, false, R.drawable.cap, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("coat", "bodyTop", 15, true, true, false, false, true, false, R.drawable.coat, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("jacket", "bodyTop", 5, true, false, false, true, false, false, R.drawable.jacket, true, false));
             db.insert(CLOTHES_TABLE, null, addNewRow("shirt", "body", 5, true, false, false, true, false, false, R.drawable.shirt, true, false));
             db.insert(CLOTHES_TABLE, null, addNewRow("trousers", "legs", 15, true, false, false, true, false, false, R.drawable.trousers, true, true));
-            db.insert(CLOTHES_TABLE, null, addNewRow("Winter-coat", "bodyTop", 30, false, true, true, false, true, true, R.drawable.winter_coat, true, false));
+            db.insert(CLOTHES_TABLE, null, addNewRow("winter-coat", "bodyTop", 30, false, true, true, false, true, true, R.drawable.winter_coat, true, false));
             db.insert(CLOTHES_TABLE, null, addNewRow("zipper", "footwear", 5, true, true, false, false, true, true, R.drawable.zipper, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("shorts", "legs", 5, false, true, true, false, false, false, R.drawable.shorts, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("noHead", "head", 0, true, true, true, true, false, false, R.drawable.nothing, true, true));

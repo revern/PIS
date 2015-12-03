@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     final String CLOTHES_STYLE_SPORT = "style_sport";
     final String CLOTHES_STYLE_EVENING = "style_evening";
 
-    private Weather weather;
     private String style;
     private Cursor cursor;
     private String sex;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView mWeatherView;
 
     private SpiceManager spiceManager = new SpiceManager(ForecastService.class);
-
+    private Forecast forecast;
     TextView mOfficialStyleButton;
     TextView mRegularStyleButton;
     TextView mSportStyleButton;
@@ -151,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         clearLists();
         style = "regular";
         sex  = sPref.getString("SEX", "male");
-        weather = new Weather();
         cursor = getContentResolver().query(CLOTHES_URI, null, null,
                 null, null);
         cursor.moveToFirst();
@@ -294,15 +292,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addStyledClothes(){
-        boolean b4=false;
-        boolean b5=false;
-        boolean b6=false;
-        boolean b7=false;
-        boolean b8=false;
-        boolean b9=false;
-        boolean b11=false;
-        boolean b12=false;
-
+        //taking boolean actions from database
+        boolean b4=false;    //is official style
+        boolean b5=false;    //is regular style
+        boolean b6=false;    //is sport style
+        boolean b7=false;    //is evening style
+        boolean b8=false;    //is windproof
+        boolean b9=false;    //is rain cover
+        boolean b11=false;   //for men
+        boolean b12=false;   //for women
         if(cursor.getString(4).equals("1")){ b4 = true; }
         if(cursor.getString(5).equals("1")){ b5 = true; }
         if(cursor.getString(6).equals("1")){ b6 = true; }
@@ -355,18 +353,32 @@ public class MainActivity extends AppCompatActivity {
     public ClothesSet createClothesSet(){
         ClothesSet clothesSet = new ClothesSet();
         //accessory adding
-        if(weather.getWeather().equals("sky is clear") && weather.getTemperature() >= 0){
-            //add sunglasses
-        }else if(weather.getTemperature()>=0 && weather.getWeather().equals("Rain")){
-            //add umbrella
-        }else if(weather.getTemperature()<0){
-            //add scarf+gloves
+        String accessory="noAccessory";
+        if(forecast.clouds.all==800 && forecast.main.temp >= 0){
+            accessory="sunglasses";
+//        }else if(forecast.main.temp>=0 && forecast.rain.all==500){
+            //accessory="umbrella";
+        }else if(forecast.main.temp<0){
+            accessory="scarf";
         }
+        try {
+            for (int i = 0; i < accessoryStyledClothes.size(); i++) {
+                if (accessoryStyledClothes.get(i).getName().equals(accessory))
+                    clothesSet.setAccessory(accessoryStyledClothes.get(i));
+            }
+        }catch (Exception e){Log.d("Setting accessory", accessory);}
 
         //head adding
-        if(weather.getTemperature()<0){
-            //add a cap
+        String head="noHead";
+        if(forecast.main.temp<0){
+            head="cap";
         }
+        try {
+            for (int i = 0; i < headStyledClothes.size(); i++) {
+                if (headStyledClothes.get(i).getName().equals(head))
+                    clothesSet.setHead(headStyledClothes.get(i));
+            }
+        }catch (Exception e){Log.d("Setting head", head);}
 
         //body and bodyTop adding
         int minFault = 99;
@@ -374,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
         Clothes bestBodyTop = bodyTopStyledClothes.get(0);
         for(int i = 0; i < bodyStyledClothes.size(); i++){
             for(int j=0; j <bodyTopStyledClothes.size(); j++){
-                int fault = bodyStyledClothes.get(i).getTemperatureCoefficient()+bodyTopStyledClothes.get(j).getTemperatureCoefficient()+weather.getTemperature()-25;
+                int fault = bodyStyledClothes.get(i).getTemperatureCoefficient()+bodyTopStyledClothes.get(j).getTemperatureCoefficient()+(int)forecast.main.temp-25;
                 fault = Math.abs(fault);
                 if(fault<minFault) {
                     minFault=fault;
@@ -390,19 +402,21 @@ public class MainActivity extends AppCompatActivity {
         minFault = 99;
         Clothes  bestLegs = legsStyledClothes.get(0);
         for(int i=0;i<legsStyledClothes.size();i++){
-            if(legsStyledClothes.get(i).getTemperatureCoefficient()<minFault){
-                minFault = legsStyledClothes.get(i).getTemperatureCoefficient();
+            int fault = legsStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25;
+            if(fault<minFault){
+                minFault = fault;
                 bestLegs = legsStyledClothes.get(i);
             }
         }
         clothesSet.setLegs(bestLegs);
 
-        //
+        //footwear adding
         minFault = 99;
         Clothes  bestFootwear = footwearStyledClothes.get(0);
         for(int i=0;i<footwearStyledClothes.size();i++){
-            if(footwearStyledClothes.get(i).getTemperatureCoefficient()<minFault){
-                minFault = footwearStyledClothes.get(i).getTemperatureCoefficient();
+            int fault = footwearStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25;
+            if(fault<minFault){
+                minFault = fault;
                 bestFootwear = footwearStyledClothes.get(i);
             }
         }
@@ -474,7 +488,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        Log.d("SETTINGS", "HELLO");
         Intent i = new Intent(MainActivity.this, SettingsActivity.class);
         startActivityForResult(i, 0);
         //noinspection SimplifiableIfStatement
