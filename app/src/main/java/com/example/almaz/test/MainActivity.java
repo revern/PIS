@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if(!sPref.getBoolean(FIRST_SETTINGS, false)) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(i);
+            startActivityForResult(i, 0);
         }
         mOfficialStyleButton = (TextView) findViewById(R.id.official_style_button);
         mRegularStyleButton = (TextView) findViewById(R.id.regular_style_button);
