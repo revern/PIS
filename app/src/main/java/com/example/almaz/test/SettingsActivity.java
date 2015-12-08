@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,19 +39,33 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor ed = sPref.edit();
-                ed.putString(CITY, mCityEditText.getText().toString());
-                ed.commit();
-                if(mMaleRadioButton.isChecked()){
-                    ed.putString(SEX, "male");
-                }else if(mFemaleRadioButton.isChecked()){
-                    ed.putString(SEX, "female");
-                }
-                ed.commit();
+                setCity();
+                setGender();
+                setLanguage();
                 ed.putBoolean(FIRST_SETTINGS, true);
                 ed.commit();
                 finish();
             }
         });
     }
-
+    public void setCity(){
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(CITY, mCityEditText.getText().toString());
+        ed.commit();
+    }
+    public void setGender(){
+        SharedPreferences.Editor ed = sPref.edit();
+        if(mMaleRadioButton.isChecked()){
+            ed.putString(SEX, "male");
+        }else if(mFemaleRadioButton.isChecked()){
+            ed.putString(SEX, "female");
+        }
+        ed.commit();
+    }
+    public void setLanguage(){
+        Log.d("Language", "calling method setLanguage");
+    }
+    public void giveFeedback(){
+        //feedback
+    }
 }

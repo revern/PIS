@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.almaz.test.Model.Clothes;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private Cursor cursor;
     private String sex;
 
+    LinearLayout mDateLayout;
     RecyclerView mRcView_1;
     RecyclerView mRcView_2;
     RecyclerView mRcView_3;
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         mRegularStyleButton = (TextView) findViewById(R.id.regular_style_button);
         mSportStyleButton = (TextView) findViewById(R.id.sport_style_button);
         mEveningStyleButton = (TextView) findViewById(R.id.evening_style_button);
-
+        mDateLayout = (LinearLayout) findViewById(R.id.date_layout);
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
         Calendar calendar = Calendar.getInstance();
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         mYearView.setText(sPref.getInt(YEAR, 0) + "");
 
         clearLists();
-        style = "regular";
+        setStyle("regular");
         sex  = sPref.getString("SEX", "male");
         cursor = getContentResolver().query(CLOTHES_URI, null, null,
                 null, null);
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         mRegularStyleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                style = "regular";
+                setStyle("regular");
                 clothesSet();
                 setAdapters();
             }
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         mOfficialStyleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                style = "official";
+                setStyle("official");
                 clothesSet();
                 setAdapters();
             }
@@ -175,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         mEveningStyleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                style="evening";
+                setStyle("evening");
                 clothesSet();
                 setAdapters();
             }
@@ -183,9 +185,16 @@ public class MainActivity extends AppCompatActivity {
         mSportStyleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                style="sport";
+                setStyle("sport");
                 clothesSet();
                 setAdapters();
+            }
+        });
+        mDateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //test
+                chooseDate();
             }
         });
     }
@@ -201,7 +210,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         spiceManager.shouldStop();
     }
-
+    public void setStyle(String style){
+        this.style=style;
+    }
     protected SpiceManager getSpiceManager() {
         return spiceManager;
     }
@@ -223,6 +234,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void chooseDate(){
+        setDate();
+    }
+
+    public void setDate(){
+        Log.d("DATE", "clicked date layout");
+    }
     public void setAdapters(){
         setRecyclerAdapter(mRcView_1, headResources);
         setRecyclerAdapter(mRcView_2, bodyResources);
