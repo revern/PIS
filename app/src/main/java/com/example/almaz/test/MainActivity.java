@@ -242,12 +242,36 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DATE", "clicked date layout");
     }
     public void setAdapters(){
+        setHeadAdapter();
+        setBodyAdapter();
+        setBodyTopAdapter();
+        setLegsAdapter();
+        setFootwearAdapter();
+        setAccessoryAdapter();
+    }
+
+    public void setHeadAdapter(){
         setRecyclerAdapter(mRcView_1, headResources);
+    }
+
+    public void setBodyAdapter(){
         setRecyclerAdapter(mRcView_2, bodyResources);
-        setRecyclerAdapter(mRcView_3, legsResources);
-        setRecyclerAdapter(mRcView_4, accessoryResources);
+    }
+
+    public void setBodyTopAdapter(){
         setRecyclerAdapter(mRcView_5, bodyTopResources);
+    }
+
+    public void setLegsAdapter(){
+        setRecyclerAdapter(mRcView_3, legsResources);
+    }
+
+    public void setFootwearAdapter(){
         setRecyclerAdapter(mRcView_6, footwearResources);
+    }
+
+    public void setAccessoryAdapter(){
+        setRecyclerAdapter(mRcView_4, accessoryResources);
     }
 
     public void clearLists(){
