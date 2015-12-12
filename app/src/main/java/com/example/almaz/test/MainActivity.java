@@ -1,5 +1,8 @@
 package com.example.almaz.test;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,9 +18,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.example.almaz.test.Model.Clothes;
 import com.example.almaz.test.Model.ClothesSet;
@@ -33,6 +38,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int DIALOG_DATE = 1;
     public static final String APP_PREFERENCES = "mySettings";
     public static final String FIRST_SETTINGS = "firstSettings";
     public final String CITY = "CITY";
@@ -54,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private String style;
     private Cursor cursor;
     private String sex;
+
+    int mYear;
+    int mMonth;
+    int mDay;
 
     LinearLayout mDateLayout;
     RecyclerView mRcView_1;
@@ -88,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private SpiceManager spiceManager = new SpiceManager(ForecastService.class);
     private Forecast forecast;
     private ClothesSet chooseClothes;
+    ImageView mWeatherImageView;
     TextView mOfficialStyleButton;
     TextView mRegularStyleButton;
     TextView mSportStyleButton;
@@ -113,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
         Calendar calendar = Calendar.getInstance();
-
-        ed.putInt(NUMBER, calendar.get(Calendar.DAY_OF_MONTH));
+        mDay=calendar.get(Calendar.DAY_OF_MONTH);
+        ed.putInt(NUMBER, mDay);
         ed.commit();
-
-        ed.putInt(MONTH, calendar.get(Calendar.MONTH));
+        mMonth=calendar.get(Calendar.MONTH);
+        ed.putInt(MONTH, mMonth);
         ed.commit();
-
-        ed.putInt(YEAR, calendar.get(Calendar.YEAR));
+        mYear = calendar.get(Calendar.YEAR);
+        ed.putInt(YEAR, mYear);
         ed.commit();
 
         //TODO: add locations
@@ -136,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         mMonthView = (TextView) findViewById(R.id.month_view);
         mYearView = (TextView) findViewById(R.id.year_view);
         mWeatherView = (ImageView) findViewById(R.id.weather_img_view);
+        mWeatherImageView= (ImageView) findViewById(R.id.weather_img_view);
 
         mRcView_1= (RecyclerView) findViewById(R.id.rcView_1);
         mRcView_2= (RecyclerView) findViewById(R.id.rcView_2);
@@ -158,8 +170,6 @@ public class MainActivity extends AppCompatActivity {
         cursor.moveToFirst();
 
         clothesSet();
-        chooseClothes = createClothesSet();
-        sortClothes();
         setAdapters();
 
         mRegularStyleButton.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setStyle("regular");
                 clothesSet();
+                chooseClothes = createClothesSet();
+                sortClothes();
                 setAdapters();
             }
         });
@@ -175,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setStyle("official");
                 clothesSet();
+                chooseClothes = createClothesSet();
+                sortClothes();
                 setAdapters();
             }
         });
@@ -183,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setStyle("evening");
                 clothesSet();
+                chooseClothes = createClothesSet();
+                sortClothes();
                 setAdapters();
             }
         });
@@ -191,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setStyle("sport");
                 clothesSet();
+                chooseClothes = createClothesSet();
+                sortClothes();
                 setAdapters();
             }
         });
@@ -241,16 +259,45 @@ public class MainActivity extends AppCompatActivity {
                 ed.commit();
                 mTemperatureView.setText(sPref.getString(TEMPERATURE, ""));
                 mWindView.setText(sPref.getString(WIND, ""));
+                chooseClothes = createClothesSet();
+
+                Log.d("weather0", forecast.weather[0].main);
+                Log.d("weather1", forecast.weather[0].id + "");
+
+                setWeatherPicture();
+                sortClothes();
+                setAdapters();
                 Log.d("TAG", currentForecast.name);
             }
         });
     }
-
+    public void setWeatherPicture(){
+        if(forecast.weather[0].id>=500 && forecast.weather[0].id<505) {
+            mWeatherImageView.setImageResource(R.drawable.w10d);
+        } else if(forecast.weather[0].id>=300 && forecast.weather[0].id<322 || forecast.weather[0].id>=520 && forecast.weather[0].id<532){
+            mWeatherImageView.setImageResource(R.drawable.w09);
+        } else if(forecast.weather[0].id==511 || forecast.weather[0].id>=600 && forecast.weather[0].id<623){
+            mWeatherImageView.setImageResource(R.drawable.w13);
+        } else if(forecast.weather[0].id>700 && forecast.weather[0].id<782){
+            mWeatherImageView.setImageResource(R.drawable.w50);
+        } else if(forecast.weather[0].id>=200 && forecast.weather[0].id<233){
+            mWeatherImageView.setImageResource(R.drawable.w11);
+        } else if(forecast.weather[0].id == 800){
+            mWeatherImageView.setImageResource(R.drawable.w01d);
+        } else if(forecast.weather[0].id == 801){
+            mWeatherImageView.setImageResource(R.drawable.w02d);
+        } else if(forecast.weather[0].id == 802){
+            mWeatherImageView.setImageResource(R.drawable.w03);
+        } else if(forecast.weather[0].id == 803 || forecast.weather[0].id == 804){
+            mWeatherImageView.setImageResource(R.drawable.w04);
+        }
+    }
     public void chooseDate(){
         setDate();
     }
 
     public void setDate(){
+        showDialog(DIALOG_DATE);
         Log.d("DATE", "clicked date layout");
     }
     public void setAdapters(){
@@ -408,11 +455,11 @@ public class MainActivity extends AppCompatActivity {
         ClothesSet clothesSet = new ClothesSet();
         //accessory adding
         String accessory="noAccessory";
-        if(forecast.clouds.all==800 && forecast.main.temp >= 273){
+        if(forecast.clouds.all==800 || forecast.clouds.all==801 && forecast.main.temp >= 273){
             accessory="sunglasses";
-//        }else if(forecast.main.temp>=0 && forecast.rain.all==500){
-            //accessory="umbrella";
-        }else if(forecast.main.temp<0){
+        }else if(forecast.main.temp>=273 && forecast.weather[0].main.equals("Rain")){
+            accessory="umbrella";
+        }else if(forecast.main.temp<273){
             accessory="scarf";
         }
         try {
@@ -421,7 +468,7 @@ public class MainActivity extends AppCompatActivity {
                     clothesSet.setAccessory(accessoryStyledClothes.get(i));
             }
         }catch (Exception e){Log.d("Setting accessory", accessory);}
-
+        Log.d("HEAD", accessory);
         //head adding
         String head="noHead";
         if(forecast.main.temp<273){
@@ -457,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
         Clothes  bestLegs = legsStyledClothes.get(0);
         for(int i=0;i<legsStyledClothes.size();i++){
             int fault = legsStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25-273;
+            fault = Math.abs(fault);
             if(fault<minFault){
                 minFault = fault;
                 bestLegs = legsStyledClothes.get(i);
@@ -469,6 +517,7 @@ public class MainActivity extends AppCompatActivity {
         Clothes  bestFootwear = footwearStyledClothes.get(0);
         for(int i=0;i<footwearStyledClothes.size();i++){
             int fault = footwearStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25-273;
+            fault = Math.abs(fault);
             if(fault<minFault){
                 minFault = fault;
                 bestFootwear = footwearStyledClothes.get(i);
@@ -481,57 +530,59 @@ public class MainActivity extends AppCompatActivity {
 
     public void sortClothes(){
         for(int i=0; i<headStyledClothes.size(); i++){
-            if(chooseClothes.getHead().equals(headStyledClothes.get(i))){
+            Log.d("sortClothesHead", headStyledClothes.size()+"");
+            Log.d("sortClothesHead", chooseClothes.getBody().getName());
+            if(chooseClothes.getHead().equals(headStyledClothes.get(i)) && headStyledClothes.size() > 1){
                 int swap = headResources.get(i);
-                headResources.remove(i);
                 headResources.add(i, headResources.get(0));
-                headResources.remove(0);
+                headResources.remove(i + 1);
                 headResources.add(0, swap);
+                headResources.remove(1);
             }
         }
         for(int i=0; i<bodyStyledClothes.size(); i++){
-            if(chooseClothes.getBody().equals(bodyStyledClothes.get(i))){
+            if(chooseClothes.getBody().equals(bodyStyledClothes.get(i))&& bodyStyledClothes.size() > 1){
                 int swap = bodyResources.get(i);
-                bodyResources.remove(i);
                 bodyResources.add(i, bodyResources.get(0));
-                bodyResources.remove(0);
+                bodyResources.remove(i+1);
                 bodyResources.add(0, swap);
+                bodyResources.remove(1);
             }
         }
         for(int i=0; i<bodyTopStyledClothes.size(); i++){
-            if(chooseClothes.getBodyTop().equals(bodyTopStyledClothes.get(i))){
+            if(chooseClothes.getBodyTop().equals(bodyTopStyledClothes.get(i))&& bodyTopStyledClothes.size() > 1){
                 int swap = bodyTopResources.get(i);
-                bodyTopResources.remove(i);
                 bodyTopResources.add(i, bodyTopResources.get(0));
-                bodyTopResources.remove(0);
+                bodyTopResources.remove(i + 1);
                 bodyTopResources.add(0, swap);
+                bodyTopResources.remove(1);
             }
         }
         for(int i=0; i<legsStyledClothes.size(); i++){
-            if(chooseClothes.getLegs().equals(legsStyledClothes.get(i))){
+            if(chooseClothes.getLegs().equals(legsStyledClothes.get(i))&& legsStyledClothes.size() > 1){
                 int swap = legsResources.get(i);
-                legsResources.remove(i);
                 legsResources.add(i, legsResources.get(0));
-                legsResources.remove(0);
+                legsResources.remove(i + 1);
                 legsResources.add(0, swap);
+                legsResources.remove(1);
             }
         }
         for(int i=0; i<footwearStyledClothes.size(); i++){
-            if(chooseClothes.getFootwear().equals(footwearStyledClothes.get(i))){
+            if(chooseClothes.getFootwear().equals(footwearStyledClothes.get(i))&& footwearStyledClothes.size() > 1){
                 int swap = footwearResources.get(i);
-                footwearResources.remove(i);
                 footwearResources.add(i, footwearResources.get(0));
-                footwearResources.remove(0);
+                footwearResources.remove(i + 1);
                 footwearResources.add(0, swap);
+                footwearResources.remove(1);
             }
         }
         for(int i=0; i<accessoryStyledClothes.size(); i++){
-            if(chooseClothes.getAccessory().equals(accessoryStyledClothes.get(i))){
+            if(chooseClothes.getAccessory().equals(accessoryStyledClothes.get(i))&& accessoryStyledClothes.size() > 1){
                 int swap = accessoryResources.get(i);
-                accessoryResources.remove(i);
                 accessoryResources.add(i, accessoryResources.get(0));
-                accessoryResources.remove(0);
+                accessoryResources.remove(i+1);
                 accessoryResources.add(0, swap);
+                accessoryResources.remove(1);
             }
         }
     }
@@ -614,7 +665,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCityView.setText(sPref.getString(CITY, ""));
         sex=sPref.getString("SEX", "male");
+        double currentLatitude = 55.7679;
+        double currentLongitude = 49.1631;
+        processLocation(currentLatitude, currentLongitude);
         clothesSet();
         setAdapters();
+    }
+    protected Dialog onCreateDialog(int id) {
+        if (id == DIALOG_DATE) {
+            DatePickerDialog tpd = new DatePickerDialog(this, myCallBack, mYear, mMonth, mDay);
+            return tpd;
+        }
+        return super.onCreateDialog(id);
+    }
+
+    DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            mYear = year;
+            mMonth = monthOfYear;
+            mDay = dayOfMonth;
+            weatherUpdate();
+        }
+    };
+
+    public void weatherUpdate(){
+        mNumberView.setText(mDay+"");
+        mMonthView.setText(getMonthName(mMonth));
+        mYearView.setText(mYear+"");
+
     }
 }
