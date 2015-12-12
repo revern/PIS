@@ -184,7 +184,7 @@ public class ClothesProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(DB_CREATE);
             db.insert(CLOTHES_TABLE, null, addNewRow("t-shirt", "body", 5, false, true, true, false, false, false, R.drawable.t_shirt, true, true));
-            db.insert(CLOTHES_TABLE, null, addNewRow("cap", "head", 30, false, true, true, false, false, false, R.drawable.cap, true, true));
+            db.insert(CLOTHES_TABLE, null, addNewRow("cap", "head", 30, true, true, true, false, false, false, R.drawable.cap, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("coat", "bodyTop", 15, true, true, false, false, true, false, R.drawable.coat, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("jacket", "bodyTop", 10, false, true, true, false, false, false, R.drawable.jacket, true, false));
             db.insert(CLOTHES_TABLE, null, addNewRow("shirt", "body", 5, true, false, false, true, false, false, R.drawable.shirt, true, false));
@@ -195,7 +195,7 @@ public class ClothesProvider extends ContentProvider {
             db.insert(CLOTHES_TABLE, null, addNewRow("b-cap", "head", 0, false, true, true, false, false, false, R.drawable.b_cap, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("blouse", "body", 5, true, false, false, false, false, false, R.drawable.blouse, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("dress", "body", 10, true, false, false, true, false, false, R.drawable.dress, false, true));
-            db.insert(CLOTHES_TABLE, null, addNewRow("glasses", "accessory", 0, false, true, false, false, false, false, R.drawable.glasses, true, true));
+            db.insert(CLOTHES_TABLE, null, addNewRow("sunglasses", "accessory", 0, false, true, false, false, false, false, R.drawable.glasses, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("hoody", "bodyTop", 10, false, true, true, false, false, false, R.drawable.hoody, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("jacket_2", "bodyTop", 5, true, false, false, true, false, false, R.drawable.jacket_2, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("jacket_3", "bodyTop", 30, true, true, true, false, true, true, R.drawable.jacket_3, true, true));
@@ -203,12 +203,12 @@ public class ClothesProvider extends ContentProvider {
             db.insert(CLOTHES_TABLE, null, addNewRow("keds", "footwear", 5, false, true, false, false, false, false, R.drawable.keds, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("man_shoe", "footwear", 10, true, false, false, true, false, false, R.drawable.man_shoe, true, false));
             db.insert(CLOTHES_TABLE, null, addNewRow("pullover", "body", 10, false, true, false, false, false, false, R.drawable.pullover, true, false));
-            db.insert(CLOTHES_TABLE, null, addNewRow("scarf", "accessory", 30, true, true, true, false, false, false, R.drawable.scarf, true, true));
+            db.insert(CLOTHES_TABLE, null, addNewRow("scarf", "accessory", 30, false, true, true, true, false, false, R.drawable.scarf, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("skirt", "legs", 5, true, false, false, false, false, false, R.drawable.skirt, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("skirt_2", "legs", 5, true, false, false, true, false, false, R.drawable.skirt_2, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("sneakers", "footwear", 15, false, true, true, false, false, false, R.drawable.sneakers, true, true));
-            db.insert(CLOTHES_TABLE, null, addNewRow("tie", "accessory", 0, true, false, false, false, false, false, R.drawable.tie, true, false));
-            db.insert(CLOTHES_TABLE, null, addNewRow("umbrella", "accessory", 0, false, true, false, false, true, true, R.drawable.umbrella, true, true));
+            db.insert(CLOTHES_TABLE, null, addNewRow("tie", "accessory", 0, true, false, false, true, false, false, R.drawable.tie, true, false));
+            db.insert(CLOTHES_TABLE, null, addNewRow("umbrella", "accessory", 0, true, true, true, true, true, true, R.drawable.umbrella, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("woman_shoe", "footwear", 5, true, true, false, true, false, false, R.drawable.woman_shoe, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("noHead", "head", 0, true, true, true, true, false, false, R.drawable.nothing, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("noBodyTop", "bodyTop", 0, true, true, true, true, false, false, R.drawable.nothing, true, true));

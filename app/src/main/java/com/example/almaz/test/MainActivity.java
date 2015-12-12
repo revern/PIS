@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -348,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
         footwearStyledClothes = new ArrayList<>();
         accessoryStyledClothes = new ArrayList<>();
     }
-    public ClothesSet clothesSet(){
+    public void clothesSet(){
         cursor.moveToFirst();
         clearLists();
 
@@ -388,8 +389,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
         }
-        ClothesSet clothesSet = new ClothesSet();
-        return clothesSet;
     }
 
     public void addStyledClothes(){
@@ -455,11 +454,11 @@ public class MainActivity extends AppCompatActivity {
         ClothesSet clothesSet = new ClothesSet();
         //accessory adding
         String accessory="noAccessory";
-        if(forecast.clouds.all==800 || forecast.clouds.all==801 && forecast.main.temp >= 273){
+        if(forecast.clouds.all==800 || forecast.clouds.all==801 && forecast.main.temp >= 273 && style.equals("regular")){
             accessory="sunglasses";
-        }else if(forecast.main.temp>=273 && forecast.weather[0].main.equals("Rain")){
+        }else if(forecast.main.temp>=273 && forecast.weather[0].id%100==5){
             accessory="umbrella";
-        }else if(forecast.main.temp<273){
+        }else if(forecast.main.temp<273 && !style.equals("official")){
             accessory="scarf";
         }
         try {
@@ -471,8 +470,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("HEAD", accessory);
         //head adding
         String head="noHead";
-        if(forecast.main.temp<273){
-            head="cap";
+        if(forecast.main.temp<273 && !style.equals("evening")){
+            head = "cap";
         }
         try {
             for (int i = 0; i < headStyledClothes.size(); i++) {
