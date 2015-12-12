@@ -31,6 +31,12 @@
                 android:layout_height="0dp"
                 android:gravity="center"
                 android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/wind_view"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/weather_img_view"

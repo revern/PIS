@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String FIRST_SETTINGS = "firstSettings";
     public final String CITY = "CITY";
     public final String TEMPERATURE = "TEMPERATURE";
+    public final String WIND = "WIND";
     public final String NUMBER = "NUMBER";
     public final String MONTH = "MONTH";
     public final String YEAR = "YEAR";
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView mCityView;
     TextView mTemperatureView;
+    TextView mWindView;
     TextView mNumberView;
     TextView mMonthView;
     TextView mYearView;
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SpiceManager spiceManager = new SpiceManager(ForecastService.class);
     private Forecast forecast;
+    private ClothesSet chooseClothes;
     TextView mOfficialStyleButton;
     TextView mRegularStyleButton;
     TextView mSportStyleButton;
@@ -111,9 +114,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor ed = sPref.edit();
         Calendar calendar = Calendar.getInstance();
 
-        ed.putString(TEMPERATURE, "-5 C");
-        ed.commit();
-
         ed.putInt(NUMBER, calendar.get(Calendar.DAY_OF_MONTH));
         ed.commit();
 
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCityView = (TextView) findViewById(R.id.city_view);
         mTemperatureView = (TextView) findViewById(R.id.temperature_view);
+        mWindView = (TextView) findViewById(R.id.wind_view);
         mNumberView = (TextView) findViewById(R.id.number_view);
         mMonthView = (TextView) findViewById(R.id.month_view);
         mYearView = (TextView) findViewById(R.id.year_view);
@@ -155,7 +156,10 @@ public class MainActivity extends AppCompatActivity {
         cursor = getContentResolver().query(CLOTHES_URI, null, null,
                 null, null);
         cursor.moveToFirst();
+
         clothesSet();
+        chooseClothes = createClothesSet();
+        sortClothes();
         setAdapters();
 
         mRegularStyleButton.setOnClickListener(new View.OnClickListener() {
@@ -229,6 +233,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRequestSuccess(Forecast currentForecast) {
                 // TODO: here you can get all your weather parametrs
+                forecast = currentForecast;
+                SharedPreferences.Editor ed = sPref.edit();
+                ed.putString(TEMPERATURE, (int) forecast.main.temp - 273 + " C");
+                ed.commit();
+                ed.putString(WIND, (int) forecast.wind.speed + " m/s");
+                ed.commit();
+                mTemperatureView.setText(sPref.getString(TEMPERATURE, ""));
+                mWindView.setText(sPref.getString(WIND, ""));
                 Log.d("TAG", currentForecast.name);
             }
         });
@@ -396,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
         ClothesSet clothesSet = new ClothesSet();
         //accessory adding
         String accessory="noAccessory";
-        if(forecast.clouds.all==800 && forecast.main.temp >= 0){
+        if(forecast.clouds.all==800 && forecast.main.temp >= 273){
             accessory="sunglasses";
 //        }else if(forecast.main.temp>=0 && forecast.rain.all==500){
             //accessory="umbrella";
@@ -412,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
 
         //head adding
         String head="noHead";
-        if(forecast.main.temp<0){
+        if(forecast.main.temp<273){
             head="cap";
         }
         try {
@@ -428,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
         Clothes bestBodyTop = bodyTopStyledClothes.get(0);
         for(int i = 0; i < bodyStyledClothes.size(); i++){
             for(int j=0; j <bodyTopStyledClothes.size(); j++){
-                int fault = bodyStyledClothes.get(i).getTemperatureCoefficient()+bodyTopStyledClothes.get(j).getTemperatureCoefficient()+(int)forecast.main.temp-25;
+                int fault = bodyStyledClothes.get(i).getTemperatureCoefficient()+bodyTopStyledClothes.get(j).getTemperatureCoefficient()+(int)forecast.main.temp-25-273;
                 fault = Math.abs(fault);
                 if(fault<minFault) {
                     minFault=fault;
@@ -444,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
         minFault = 99;
         Clothes  bestLegs = legsStyledClothes.get(0);
         for(int i=0;i<legsStyledClothes.size();i++){
-            int fault = legsStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25;
+            int fault = legsStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25-273;
             if(fault<minFault){
                 minFault = fault;
                 bestLegs = legsStyledClothes.get(i);
@@ -456,7 +468,7 @@ public class MainActivity extends AppCompatActivity {
         minFault = 99;
         Clothes  bestFootwear = footwearStyledClothes.get(0);
         for(int i=0;i<footwearStyledClothes.size();i++){
-            int fault = footwearStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25;
+            int fault = footwearStyledClothes.get(i).getTemperatureCoefficient()+(int)forecast.main.temp-25-273;
             if(fault<minFault){
                 minFault = fault;
                 bestFootwear = footwearStyledClothes.get(i);
@@ -466,6 +478,64 @@ public class MainActivity extends AppCompatActivity {
 
         return clothesSet;
     }
+
+    public void sortClothes(){
+        for(int i=0; i<headStyledClothes.size(); i++){
+            if(chooseClothes.getHead().equals(headStyledClothes.get(i))){
+                int swap = headResources.get(i);
+                headResources.remove(i);
+                headResources.add(i, headResources.get(0));
+                headResources.remove(0);
+                headResources.add(0, swap);
+            }
+        }
+        for(int i=0; i<bodyStyledClothes.size(); i++){
+            if(chooseClothes.getBody().equals(bodyStyledClothes.get(i))){
+                int swap = bodyResources.get(i);
+                bodyResources.remove(i);
+                bodyResources.add(i, bodyResources.get(0));
+                bodyResources.remove(0);
+                bodyResources.add(0, swap);
+            }
+        }
+        for(int i=0; i<bodyTopStyledClothes.size(); i++){
+            if(chooseClothes.getBodyTop().equals(bodyTopStyledClothes.get(i))){
+                int swap = bodyTopResources.get(i);
+                bodyTopResources.remove(i);
+                bodyTopResources.add(i, bodyTopResources.get(0));
+                bodyTopResources.remove(0);
+                bodyTopResources.add(0, swap);
+            }
+        }
+        for(int i=0; i<legsStyledClothes.size(); i++){
+            if(chooseClothes.getLegs().equals(legsStyledClothes.get(i))){
+                int swap = legsResources.get(i);
+                legsResources.remove(i);
+                legsResources.add(i, legsResources.get(0));
+                legsResources.remove(0);
+                legsResources.add(0, swap);
+            }
+        }
+        for(int i=0; i<footwearStyledClothes.size(); i++){
+            if(chooseClothes.getFootwear().equals(footwearStyledClothes.get(i))){
+                int swap = footwearResources.get(i);
+                footwearResources.remove(i);
+                footwearResources.add(i, footwearResources.get(0));
+                footwearResources.remove(0);
+                footwearResources.add(0, swap);
+            }
+        }
+        for(int i=0; i<accessoryStyledClothes.size(); i++){
+            if(chooseClothes.getAccessory().equals(accessoryStyledClothes.get(i))){
+                int swap = accessoryResources.get(i);
+                accessoryResources.remove(i);
+                accessoryResources.add(i, accessoryResources.get(0));
+                accessoryResources.remove(0);
+                accessoryResources.add(0, swap);
+            }
+        }
+    }
+
     public String getMonthName(int month){
         String monthName="";
         switch (month){

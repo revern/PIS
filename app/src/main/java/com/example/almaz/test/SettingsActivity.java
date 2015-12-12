@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -22,6 +23,8 @@ public class SettingsActivity extends AppCompatActivity {
     private RadioButton mFemaleRadioButton;
     private EditText mCityEditText;
     private Button mAcceptButton;
+    private TextView mWelcomeTV;
+    private TextView mFirstTimeTV;
 
     SharedPreferences sPref;
     @Override
@@ -30,10 +33,14 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mMaleRadioButton = (RadioButton) findViewById(R.id.rbMale);
         mFemaleRadioButton = (RadioButton) findViewById(R.id.rbFemale);
         mCityEditText = (EditText) findViewById(R.id.city_edit_text);
         mAcceptButton = (Button) findViewById(R.id.settings_accept_btn);
+        mWelcomeTV = (TextView) findViewById(R.id.welcome_tv);
+        mFirstTimeTV = (TextView) findViewById(R.id.first_time_tv);
+
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         mAcceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +54,13 @@ public class SettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
+        if(sPref.getBoolean(FIRST_SETTINGS,false)){
+            mWelcomeTV.setText("Settings");
+            mFirstTimeTV.setText("");
+        } else {
+            mWelcomeTV.setText("Welcome!");
+            mFirstTimeTV.setText("You are first time in this application");
+        }
     }
     public void setCity(){
         SharedPreferences.Editor ed = sPref.edit();
