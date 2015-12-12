@@ -9,18 +9,17 @@ import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
  */
 public class WeatherRequest extends RetrofitSpiceRequest<Forecast, OpenWeatherAPI> {
 
-    private double lat, lon;
+    private String city;
 
-    public WeatherRequest(double longitude, double latitude) {
+    public WeatherRequest(String city) {
         super(Forecast.class, OpenWeatherAPI.class);
-        this.lat = latitude;
-        this.lon = longitude;
+        this.city=city;
     }
 
     @Override
     public Forecast loadDataFromNetwork() throws Exception {
 
-        Forecast mWeather = getService().getWeatherByLatLon(lat, lon);
+        Forecast mWeather = getService().getWeatherByLatLon(city);
         return mWeather;
     }
 }

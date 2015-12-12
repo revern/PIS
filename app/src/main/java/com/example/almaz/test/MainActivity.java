@@ -135,11 +135,7 @@ public class MainActivity extends AppCompatActivity {
         ed.putInt(YEAR, mYear);
         ed.commit();
 
-        //TODO: add locations
-        double currentLatitude = 55.7679;
-        double currentLongitude = 49.1631;
-
-        processLocation(currentLatitude, currentLongitude);
+        processLocation(sPref.getString(CITY, ""));
 
         mCityView = (TextView) findViewById(R.id.city_view);
         mTemperatureView = (TextView) findViewById(R.id.temperature_view);
@@ -240,9 +236,9 @@ public class MainActivity extends AppCompatActivity {
         return spiceManager;
     }
 
-    public void processLocation(double currentLatitude, double currentLongitude) {
+    public void processLocation(String city) {
 
-        WeatherRequest request = new WeatherRequest(currentLongitude, currentLatitude);
+        WeatherRequest request = new WeatherRequest(city);
         getSpiceManager().execute(request, new RequestListener<Forecast>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -664,9 +660,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCityView.setText(sPref.getString(CITY, ""));
         sex=sPref.getString("SEX", "male");
-        double currentLatitude = 55.7679;
-        double currentLongitude = 49.1631;
-        processLocation(currentLatitude, currentLongitude);
+        processLocation(sPref.getString(CITY, ""));
         clothesSet();
         setAdapters();
     }
