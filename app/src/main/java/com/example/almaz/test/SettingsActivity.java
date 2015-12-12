@@ -1,7 +1,9 @@
 package com.example.almaz.test;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
     private RadioButton mFemaleRadioButton;
     private EditText mCityEditText;
     private Button mAcceptButton;
+    private Button mFeedbackButton;
     private TextView mWelcomeTV;
     private TextView mFirstTimeTV;
 
@@ -38,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         mFemaleRadioButton = (RadioButton) findViewById(R.id.rbFemale);
         mCityEditText = (EditText) findViewById(R.id.city_edit_text);
         mAcceptButton = (Button) findViewById(R.id.settings_accept_btn);
+        mFeedbackButton = (Button) findViewById(R.id.feedback_btn);
         mWelcomeTV = (TextView) findViewById(R.id.welcome_tv);
         mFirstTimeTV = (TextView) findViewById(R.id.first_time_tv);
 
@@ -52,6 +56,12 @@ public class SettingsActivity extends AppCompatActivity {
                 ed.putBoolean(FIRST_SETTINGS, true);
                 ed.commit();
                 finish();
+            }
+        });
+        mFeedbackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                giveFeedback();
             }
         });
         if(sPref.getBoolean(FIRST_SETTINGS,false)){
@@ -80,6 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d("Language", "calling method setLanguage");
     }
     public void giveFeedback(){
-        //feedback
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+        startActivity(browserIntent);
     }
 }

@@ -1,9 +1,11 @@
 package com.example.almaz.test;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -37,6 +39,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     public static final int DIALOG_DATE = 1;
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     int mYear;
     int mMonth;
     int mDay;
+    double mDifference;
 
     LinearLayout mDateLayout;
     RecyclerView mRcView_1;
@@ -123,18 +127,8 @@ public class MainActivity extends AppCompatActivity {
         mEveningStyleButton = (TextView) findViewById(R.id.evening_style_button);
         mDateLayout = (LinearLayout) findViewById(R.id.date_layout);
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
-        Calendar calendar = Calendar.getInstance();
-        mDay=calendar.get(Calendar.DAY_OF_MONTH);
-        ed.putInt(NUMBER, mDay);
-        ed.commit();
-        mMonth=calendar.get(Calendar.MONTH);
-        ed.putInt(MONTH, mMonth);
-        ed.commit();
-        mYear = calendar.get(Calendar.YEAR);
-        ed.putInt(YEAR, mYear);
-        ed.commit();
 
+        mDifference=0;
         processLocation(sPref.getString(CITY, ""));
 
         mCityView = (TextView) findViewById(R.id.city_view);
@@ -145,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         mYearView = (TextView) findViewById(R.id.year_view);
         mWeatherView = (ImageView) findViewById(R.id.weather_img_view);
         mWeatherImageView= (ImageView) findViewById(R.id.weather_img_view);
+        mCityView.setText(sPref.getString(CITY,""));
+        dateUpdate();
 
         mRcView_1= (RecyclerView) findViewById(R.id.rcView_1);
         mRcView_2= (RecyclerView) findViewById(R.id.rcView_2);
@@ -152,12 +148,6 @@ public class MainActivity extends AppCompatActivity {
         mRcView_4= (RecyclerView) findViewById(R.id.rcView_4);
         mRcView_5= (RecyclerView) findViewById(R.id.rcView_5);
         mRcView_6= (RecyclerView) findViewById(R.id.rcView_6);
-
-        mCityView.setText(sPref.getString(CITY, ""));
-        mTemperatureView.setText(sPref.getString(TEMPERATURE, ""));
-        mNumberView.setText(sPref.getInt(NUMBER, 0) + "");
-        mMonthView.setText(getMonthName(sPref.getInt(MONTH, 0)));
-        mYearView.setText(sPref.getInt(YEAR, 0) + "");
 
         clearLists();
         setStyle("regular");
@@ -249,28 +239,44 @@ public class MainActivity extends AppCompatActivity {
             public void onRequestSuccess(Forecast currentForecast) {
                 // TODO: here you can get all your weather parametrs
                 forecast = currentForecast;
-                SharedPreferences.Editor ed = sPref.edit();
-                ed.putString(TEMPERATURE, (int) forecast.main.temp - 273 + " C");
-                ed.commit();
-                ed.putString(WIND, (int) forecast.wind.speed + " m/s");
-                ed.commit();
-                mTemperatureView.setText(sPref.getString(TEMPERATURE, ""));
-                mWindView.setText(sPref.getString(WIND, ""));
-                chooseClothes = createClothesSet();
-
-                Log.d("weather0", forecast.weather[0].main);
-                Log.d("weather1", forecast.weather[0].id + "");
-
-                setWeatherPicture();
-                sortClothes();
-                setAdapters();
-                Log.d("TAG", currentForecast.name);
+                try {
+                    SharedPreferences.Editor ed = sPref.edit();
+                    ed.putString(TEMPERATURE, (int) (forecast.main.temp - (0.5 * mDifference)) - 273 + " C");
+                    ed.commit();
+                    if (mDifference % 2 == 0) {
+                        ed.putString(WIND, (int) forecast.wind.speed + (int) mDifference + " m/s");
+                        ed.commit();
+                    } else {
+                        ed.putString(WIND, (int) Math.abs(forecast.wind.speed - (int) mDifference) + " m/s");
+                        ed.commit();
+                    }
+                    mTemperatureView.setText(sPref.getString(TEMPERATURE, ""));
+                    mWindView.setText(sPref.getString(WIND, ""));
+                    chooseClothes = createClothesSet();
+                    setWeatherPicture();
+                    sortClothes();
+                    setAdapters();
+                    Log.d("TAG", currentForecast.name);
+                }catch (Exception e){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Wrong city name")
+                            .setMessage("Please, enter correct city")
+                            .setCancelable(false)
+                            .setNegativeButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
             }
         });
     }
     public void setWeatherPicture(){
         if(forecast.weather[0].id>=500 && forecast.weather[0].id<505) {
-            mWeatherImageView.setImageResource(R.drawable.w10d);
+            mWeatherImageView.setImageResource(R.drawable.w10);
         } else if(forecast.weather[0].id>=300 && forecast.weather[0].id<322 || forecast.weather[0].id>=520 && forecast.weather[0].id<532){
             mWeatherImageView.setImageResource(R.drawable.w09);
         } else if(forecast.weather[0].id==511 || forecast.weather[0].id>=600 && forecast.weather[0].id<623){
@@ -280,11 +286,11 @@ public class MainActivity extends AppCompatActivity {
         } else if(forecast.weather[0].id>=200 && forecast.weather[0].id<233){
             mWeatherImageView.setImageResource(R.drawable.w11);
         } else if(forecast.weather[0].id == 800){
-            mWeatherImageView.setImageResource(R.drawable.w01d);
+            mWeatherImageView.setImageResource(R.drawable.w01);
         } else if(forecast.weather[0].id == 801){
-            mWeatherImageView.setImageResource(R.drawable.w02d);
+            mWeatherImageView.setImageResource(R.drawable.w02);
         } else if(forecast.weather[0].id == 802){
-            mWeatherImageView.setImageResource(R.drawable.w03);
+            mWeatherImageView.setImageResource(R.drawable.w04);
         } else if(forecast.weather[0].id == 803 || forecast.weather[0].id == 804){
             mWeatherImageView.setImageResource(R.drawable.w04);
         }
@@ -533,6 +539,11 @@ public class MainActivity extends AppCompatActivity {
                 headResources.remove(i + 1);
                 headResources.add(0, swap);
                 headResources.remove(1);
+                Clothes cSwap = headStyledClothes.get(i);
+                headStyledClothes.add(i, headStyledClothes.get(0));
+                headStyledClothes.remove(i + 1);
+                headStyledClothes.add(0, cSwap);
+                headStyledClothes.remove(1);
             }
         }
         for(int i=0; i<bodyStyledClothes.size(); i++){
@@ -542,6 +553,11 @@ public class MainActivity extends AppCompatActivity {
                 bodyResources.remove(i+1);
                 bodyResources.add(0, swap);
                 bodyResources.remove(1);
+                Clothes cSwap = bodyStyledClothes.get(i);
+                bodyStyledClothes.add(i, bodyStyledClothes.get(0));
+                bodyStyledClothes.remove(i+1);
+                bodyStyledClothes.add(0, cSwap);
+                bodyStyledClothes.remove(1);
             }
         }
         for(int i=0; i<bodyTopStyledClothes.size(); i++){
@@ -551,6 +567,11 @@ public class MainActivity extends AppCompatActivity {
                 bodyTopResources.remove(i + 1);
                 bodyTopResources.add(0, swap);
                 bodyTopResources.remove(1);
+                Clothes cSwap = bodyTopStyledClothes.get(i);
+                bodyTopStyledClothes.add(i, bodyTopStyledClothes.get(0));
+                bodyTopStyledClothes.remove(i+1);
+                bodyTopStyledClothes.add(0, cSwap);
+                bodyTopStyledClothes.remove(1);
             }
         }
         for(int i=0; i<legsStyledClothes.size(); i++){
@@ -560,6 +581,11 @@ public class MainActivity extends AppCompatActivity {
                 legsResources.remove(i + 1);
                 legsResources.add(0, swap);
                 legsResources.remove(1);
+                Clothes cSwap = legsStyledClothes.get(i);
+                legsStyledClothes.add(i, legsStyledClothes.get(0));
+                legsStyledClothes.remove(i+1);
+                legsStyledClothes.add(0, cSwap);
+                legsStyledClothes.remove(1);
             }
         }
         for(int i=0; i<footwearStyledClothes.size(); i++){
@@ -569,6 +595,11 @@ public class MainActivity extends AppCompatActivity {
                 footwearResources.remove(i + 1);
                 footwearResources.add(0, swap);
                 footwearResources.remove(1);
+                Clothes cSwap = footwearStyledClothes.get(i);
+                footwearStyledClothes.add(i, footwearStyledClothes.get(0));
+                footwearStyledClothes.remove(i+1);
+                footwearStyledClothes.add(0, cSwap);
+                footwearStyledClothes.remove(1);
             }
         }
         for(int i=0; i<accessoryStyledClothes.size(); i++){
@@ -578,6 +609,11 @@ public class MainActivity extends AppCompatActivity {
                 accessoryResources.remove(i+1);
                 accessoryResources.add(0, swap);
                 accessoryResources.remove(1);
+                Clothes cSwap = accessoryStyledClothes.get(i);
+                accessoryStyledClothes.add(i, accessoryStyledClothes.get(0));
+                accessoryStyledClothes.remove(i+1);
+                accessoryStyledClothes.add(0, cSwap);
+                accessoryStyledClothes.remove(1);
             }
         }
     }
@@ -660,6 +696,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCityView.setText(sPref.getString(CITY, ""));
         sex=sPref.getString("SEX", "male");
+        dateUpdate();
+        mDifference=0;
         processLocation(sPref.getString(CITY, ""));
         clothesSet();
         setAdapters();
@@ -676,6 +714,12 @@ public class MainActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
+            dateUpdate();
+            if(dayOfMonth-mDay>=0){
+                mDifference=dayOfMonth-mDay;
+            } else {
+                mDifference=dayOfMonth+30-mDay;
+            }
             mYear = year;
             mMonth = monthOfYear;
             mDay = dayOfMonth;
@@ -684,9 +728,25 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void weatherUpdate(){
+        viewsDateUpdate();
+        if(mDifference>7){
+            mWeatherImageView.setImageResource(R.drawable.nothing);
+            mWindView.setText("");
+            mTemperatureView.setText("");
+        }else {
+            processLocation(sPref.getString(CITY, ""));
+        }
+    }
+    public void viewsDateUpdate(){
         mNumberView.setText(mDay+"");
         mMonthView.setText(getMonthName(mMonth));
         mYearView.setText(mYear+"");
-
+    }
+    public void dateUpdate(){
+        Calendar calendar = Calendar.getInstance();
+        mDay=calendar.get(Calendar.DAY_OF_MONTH);
+        mMonth=calendar.get(Calendar.MONTH);
+        mYear = calendar.get(Calendar.YEAR);
+        viewsDateUpdate();
     }
 }
