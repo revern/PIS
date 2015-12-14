@@ -192,6 +192,7 @@ public class ClothesProvider extends ContentProvider {
             db.insert(CLOTHES_TABLE, null, addNewRow("winter-coat", "bodyTop", 15, false, true, true, false, true, true, R.drawable.winter_coat, true, false));
             db.insert(CLOTHES_TABLE, null, addNewRow("zipper", "footwear", 5, true, true, false, false, true, true, R.drawable.zipper, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("shorts", "legs", 5, false, true, true, false, false, false, R.drawable.shorts, true, true));
+            db.insert(CLOTHES_TABLE, null, addNewRow("sport_trousers", "legs", 15, false, false, true, false, false, false, R.drawable.sport_tousers, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("b-cap", "head", 0, false, true, true, false, false, false, R.drawable.b_cap, true, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("blouse", "body", 5, true, false, false, false, false, false, R.drawable.blouse, false, true));
             db.insert(CLOTHES_TABLE, null, addNewRow("dress", "body", 10, true, false, false, true, false, false, R.drawable.dress, false, true));

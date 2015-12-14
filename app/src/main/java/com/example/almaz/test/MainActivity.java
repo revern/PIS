@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog alert = builder.create();
                     alert.show();
                     TextView textView = (TextView) alert.findViewById(android.R.id.message);
-                    textView.setTextSize(22);
+                    textView.setTextSize(28);
                 }
             }
         });
@@ -350,6 +350,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                     AlertDialog alert = builder.create();
                     alert.show();
+                    clearWeather();
                 }
             }
         });
@@ -849,12 +850,16 @@ public class MainActivity extends AppCompatActivity {
     public void weatherUpdate() {
         viewsDateUpdate();
         if (mDifference > 7) {
-            mWeatherImageView.setImageResource(R.drawable.nothing);
-            mWindView.setText("");
-            mTemperatureView.setText("");
+            clearWeather();
         } else {
             processLocation(sPref.getString(CITY, ""));
         }
+    }
+
+    public void clearWeather(){
+        mWeatherImageView.setImageResource(R.drawable.nothing);
+        mWindView.setText("");
+        mTemperatureView.setText("");
     }
 
     public void viewsDateUpdate() {

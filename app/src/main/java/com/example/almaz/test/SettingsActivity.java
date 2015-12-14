@@ -3,6 +3,7 @@ package com.example.almaz.test;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.example.almaz.test.Model.City;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -28,7 +37,6 @@ public class SettingsActivity extends AppCompatActivity {
     private Button mFeedbackButton;
     private TextView mWelcomeTV;
     private TextView mFirstTimeTV;
-
     SharedPreferences sPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         mFeedbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,12 +80,15 @@ public class SettingsActivity extends AppCompatActivity {
             mWelcomeTV.setText("Welcome!");
             mFirstTimeTV.setText("You are first time in this application");
         }
+
     }
+
     public void setCity(){
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(CITY, mCityEditText.getText().toString());
         ed.commit();
     }
+
     public void setGender(){
         SharedPreferences.Editor ed = sPref.edit();
         if(mMaleRadioButton.isChecked()){
@@ -86,9 +98,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
         ed.commit();
     }
+
     public void setLanguage(){
         Log.d("Language", "calling method setLanguage");
     }
+
     public void giveFeedback(){
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
         startActivity(browserIntent);
