@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,13 +38,10 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String FIRST_SETTINGS = "firstSettings";
     private RadioButton mMaleRadioButton;
     private RadioButton mFemaleRadioButton;
-//    private EditText mCityEditText;
-    private int cityPosition=0;
     private Spinner mSpinner;
-    private Button mAcceptButton;
-    private Button mFeedbackButton;
+    private FloatingActionButton mFeedbackFab;
+    private FloatingActionButton mSaveFab;
     private TextView mWelcomeTV;
-    private TextView mFirstTimeTV;
     SharedPreferences sPref;
     List<City> cities;
     List<String> cityNames;
@@ -56,15 +54,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         mMaleRadioButton = (RadioButton) findViewById(R.id.rbMale);
         mFemaleRadioButton = (RadioButton) findViewById(R.id.rbFemale);
-//        mCityEditText = (EditText) findViewById(R.id.city_edit_text);
         mSpinner = (Spinner) findViewById(R.id.spinner);
-        mAcceptButton = (Button) findViewById(R.id.settings_accept_btn);
-        mFeedbackButton = (Button) findViewById(R.id.feedback_btn);
+        mFeedbackFab = (FloatingActionButton) findViewById(R.id.feedback_fab);
+        mSaveFab = (FloatingActionButton) findViewById(R.id.save_fab);
         mWelcomeTV = (TextView) findViewById(R.id.welcome_tv);
-        mFirstTimeTV = (TextView) findViewById(R.id.first_time_tv);
 
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        mAcceptButton.setOnClickListener(new View.OnClickListener() {
+        mSaveFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor ed = sPref.edit();
@@ -77,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mFeedbackButton.setOnClickListener(new View.OnClickListener() {
+        mFeedbackFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 giveFeedback();
@@ -85,10 +81,8 @@ public class SettingsActivity extends AppCompatActivity {
         });
         if(sPref.getBoolean(FIRST_SETTINGS,false)){
             mWelcomeTV.setText("Settings");
-            mFirstTimeTV.setText("");
         } else {
             mWelcomeTV.setText("Welcome!");
-            mFirstTimeTV.setText("You are first time in this application");
         }
         cities=setNewCities();
         cityNames=setCityNames();

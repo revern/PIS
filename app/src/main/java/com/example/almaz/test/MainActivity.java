@@ -48,16 +48,16 @@ public class MainActivity extends AppCompatActivity {
     public static final int DIALOG_DATE = 1;
     public static final String APP_PREFERENCES = "mySettings";
     public static final String FIRST_SETTINGS = "firstSettings";
-    public final String CITY = "CITY";
-    public final String TEMPERATURE = "TEMPERATURE";
-    public final String WIND = "WIND";
-    public final String PRESSURE = "PRESSURE";
-    public final String HUMIDITY = "HUMIDITY";
-    public final String NUMBER = "NUMBER";
-    public final String MONTH = "MONTH";
-    public final String YEAR = "YEAR";
-    public final String IMAGE = "IMAGE";
-    public final String ID = "ID";
+    public static final String CITY = "CITY";
+    public static final String TEMPERATURE = "TEMPERATURE";
+    public static final String WIND = "WIND";
+    public static final String PRESSURE = "PRESSURE";
+    public static final String HUMIDITY = "HUMIDITY";
+    public static final String NUMBER = "NUMBER";
+    public static final String MONTH = "MONTH";
+    public static final String YEAR = "YEAR";
+    public static final String IMAGE = "IMAGE";
+    public static final String ID = "ID";
     final Uri CLOTHES_URI = Uri
             .parse("content://almaz.example.com.test/contacts");
     final String CLOTHES_NAME = "name";
@@ -223,26 +223,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mTemperatureView.getText().toString().equals("") && !mTemperatureView.getText().toString().equals(null)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    String weather = "City: " + sPref.getString(CITY, "") + "\n"
-                            + "Temperature: " + sPref.getString(TEMPERATURE, "") + "\n"
-                            + "Wind: " + sPref.getString(WIND, "") + "\n"
-                            + "Pressure: " + sPref.getString(PRESSURE, "") + "\n"
-                            + "Humidity: " + sPref.getString(HUMIDITY, "");
-                    builder.setTitle("Forecast")
-                            .setMessage(weather)
-                            .setCancelable(false)
-                            .setIcon(sPref.getInt(IMAGE, R.drawable.w01))
-                            .setNegativeButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                        }
-                                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
-                    textView.setTextSize(28);
+                    Intent i = new Intent(MainActivity.this, WeatherActivity.class);
+                    startActivity(i);
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                    String weather = "City: " + sPref.getString(CITY, "") + "\n"
+//                            + "Temperature: " + sPref.getString(TEMPERATURE, "") + "\n"
+//                            + "Wind: " + sPref.getString(WIND, "") + "\n"
+//                            + "Pressure: " + sPref.getString(PRESSURE, "") + "\n"
+//                            + "Humidity: " + sPref.getString(HUMIDITY, "");
+//                    builder.setMessage(weather)
+//                            .setCancelable(false)
+//                            .setIcon(sPref.getInt(IMAGE, R.drawable.w01))
+//                            .setNegativeButton("OK",
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int id) {
+//                                            dialog.cancel();
+//                                        }
+//                                    });
+//                    AlertDialog alert = builder.create();
+//                    alert.show();
+//                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
+//                    textView.setTextSize(28);
                 }
             }
         });
@@ -318,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 forecast = currentForecast;
                 try {
                     SharedPreferences.Editor ed = sPref.edit();
-                    ed.putString(TEMPERATURE, (int) (forecast.main.temp - (0.5 * mDifference)) - 273 + " C");
+                    ed.putString(TEMPERATURE, (int) (forecast.main.temp - (0.5 * mDifference)) - 273 + "° C");
                     ed.commit();
                     if (mDifference % 2 == 0) {
                         ed.putString(WIND, (int) forecast.wind.speed + (int) mDifference + " m/s");
@@ -858,7 +859,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clearWeather(){
-        mWeatherImageView.setImageResource(R.drawable.nothing);
+        mWeatherImageView.setImageResource(R.drawable.red200);
         mWindView.setText("");
         mTemperatureView.setText("");
     }

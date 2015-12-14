@@ -17,73 +17,81 @@
         android:textSize="36dp"
         android:layout_margin="8dp"/>
     <TextView
-        android:id="@+id/first_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="22dp"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:text="Please, enter your gender and city"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/gender_male"
+                android:layout_weight="1"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/gender_female"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:textSize="24dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:id="@+id/rgGravity">
+            <RadioButton
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:checked="true"
+                android:textSize="24dp"
+                android:layout_margin="8dp"
+                android:text="Male"
+                android:id="@+id/rbMale">
+            </RadioButton>
+            <RadioButton
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Female"
+                android:textSize="24dp"
+                android:layout_margin="8dp"
+                android:id="@+id/rbFemale">
+            </RadioButton>
+        </RadioGroup>
+
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="3px"
+        android:layout_marginTop="40dp"
+        android:background="@color/common_signin_btn_dark_text_disabled" />
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
+    </Spinner>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22dp"
-        android:layout_margin="8dp"
-        android:text="Please, enter your sex and city"/>
-    <RadioGroup
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="24dp"
-        android:layout_margin="8dp"
-        android:orientation="vertical"
-        android:id="@+id/rgGravity">
-        <RadioButton
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:checked="true"
-            android:textSize="24dp"
-            android:layout_margin="8dp"
-            android:text="Male"
-            android:id="@+id/rbMale">
-        </RadioButton>
-        <RadioButton
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Female"
-            android:textSize="24dp"
-            android:layout_margin="8dp"
-            android:id="@+id/rbFemale">
-        </RadioButton>
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_height="wrap_content">
-        </Spinner>
-    </RadioGroup>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_marginTop="40dp"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_vertical"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/feedback_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="18dp"
-            android:layout_marginRight="8dp"
-            android:layout_gravity="center"
-            android:text="give feedback"/>
-        <Button
-            android:id="@+id/settings_accept_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginLeft="8dp"
-            android:textSize="28dp"
-            android:layout_gravity="center"
-            android:text="Accept"/>
+        android:layout_gravity="bottom"
+        android:paddingTop="180dp"
+        android:gravity="center"
+        android:text="Made from command YGRA, ITIS, 2015"/>
 
-    </LinearLayout>
 </LinearLayout>
