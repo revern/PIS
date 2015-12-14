@@ -10,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.almaz.test.Model.City;
@@ -28,16 +31,22 @@ public class SettingsActivity extends AppCompatActivity {
 
     public final String SEX = "SEX";
     public final String CITY = "CITY";
+    public final String POSITION = "POSITION";
+    public final String ID = "ID";
     public static final String APP_PREFERENCES = "mySettings";
     public static final String FIRST_SETTINGS = "firstSettings";
     private RadioButton mMaleRadioButton;
     private RadioButton mFemaleRadioButton;
-    private EditText mCityEditText;
+//    private EditText mCityEditText;
+    private int cityPosition=0;
+    private Spinner mSpinner;
     private Button mAcceptButton;
     private Button mFeedbackButton;
     private TextView mWelcomeTV;
     private TextView mFirstTimeTV;
     SharedPreferences sPref;
+    List<City> cities;
+    List<String> cityNames;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         mMaleRadioButton = (RadioButton) findViewById(R.id.rbMale);
         mFemaleRadioButton = (RadioButton) findViewById(R.id.rbFemale);
-        mCityEditText = (EditText) findViewById(R.id.city_edit_text);
+//        mCityEditText = (EditText) findViewById(R.id.city_edit_text);
+        mSpinner = (Spinner) findViewById(R.id.spinner);
         mAcceptButton = (Button) findViewById(R.id.settings_accept_btn);
         mFeedbackButton = (Button) findViewById(R.id.feedback_btn);
         mWelcomeTV = (TextView) findViewById(R.id.welcome_tv);
@@ -58,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor ed = sPref.edit();
-                setCity();
+                setCity(sPref.getInt(POSITION, 0));
                 setGender();
                 setLanguage();
                 ed.putBoolean(FIRST_SETTINGS, true);
@@ -80,12 +90,32 @@ public class SettingsActivity extends AppCompatActivity {
             mWelcomeTV.setText("Welcome!");
             mFirstTimeTV.setText("You are first time in this application");
         }
+        cities=setNewCities();
+        cityNames=setCityNames();
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.row, R.id.city_row, cityNames);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setPrompt("Choose city");
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SharedPreferences.Editor ed = sPref.edit();
+                ed.putInt(POSITION, position);
+                ed.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
-    public void setCity(){
+    public void setCity(int position){
         SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(CITY, mCityEditText.getText().toString());
+        ed.putInt(ID, cities.get(position).getId());
+        ed.commit();
+        ed.putString(CITY, cities.get(position).getName());
         ed.commit();
     }
 
@@ -107,4 +137,29 @@ public class SettingsActivity extends AppCompatActivity {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
         startActivity(browserIntent);
     }
+
+    public List<City> setNewCities(){
+        List list = new ArrayList();
+        City city=new City(551487, "Kazan");
+        list.add(city);
+        city=new City(524901, "Moscow");
+        list.add(city);
+        city=new City(5128581, "New York");
+        list.add(city);
+        city=new City(2643743, "London");
+        list.add(city);
+        city=new City(1850147, "Tokyo");
+        list.add(city);
+        city=new City(2855016, "Peking");
+        list.add(city);
+        return list;
+    }
+    public List<String> setCityNames(){
+        List<String> list = new ArrayList<>();
+        for(int i=0;i<cities.size();i++){
+            list.add(cities.get(i).getName());
+        }
+        return list;
+    }
+
 }

@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public final String MONTH = "MONTH";
     public final String YEAR = "YEAR";
     public final String IMAGE = "IMAGE";
+    public final String ID = "ID";
     final Uri CLOTHES_URI = Uri
             .parse("content://almaz.example.com.test/contacts");
     final String CLOTHES_NAME = "name";
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         mDifference = 0;
-        processLocation(sPref.getString(CITY, ""));
+        processLocation(sPref.getInt(ID, 0));
 
         mCityView = (TextView) findViewById(R.id.city_view);
         mTemperatureView = (TextView) findViewById(R.id.temperature_view);
@@ -302,9 +303,9 @@ public class MainActivity extends AppCompatActivity {
         return spiceManager;
     }
 
-    public void processLocation(String city) {
+    public void processLocation(int id) {
 
-        WeatherRequest request = new WeatherRequest(city);
+        WeatherRequest request = new WeatherRequest(id);
         getSpiceManager().execute(request, new RequestListener<Forecast>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -817,7 +818,7 @@ public class MainActivity extends AppCompatActivity {
         sex = sPref.getString("SEX", "male");
         dateUpdate();
         mDifference = 0;
-        processLocation(sPref.getString(CITY, ""));
+        processLocation(sPref.getInt(ID, 0));
         clothesSet();
         setAdapters();
     }
@@ -852,7 +853,7 @@ public class MainActivity extends AppCompatActivity {
         if (mDifference > 7) {
             clearWeather();
         } else {
-            processLocation(sPref.getString(CITY, ""));
+            processLocation(sPref.getInt(ID, 0));
         }
     }
 

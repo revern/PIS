@@ -52,15 +52,12 @@
             android:layout_margin="8dp"
             android:id="@+id/rbFemale">
         </RadioButton>
-        <EditText
-            android:id="@+id/city_edit_text"
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="match_parent"
-            android:inputType="textPersonName"
-            android:textSize="24dp"
-            android:hint="Enter your city"
-            android:layout_margin="8dp"
-
-            android:layout_height="wrap_content" />
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content">
+        </Spinner>
     </RadioGroup>
     <LinearLayout
         android:orientation="horizontal"

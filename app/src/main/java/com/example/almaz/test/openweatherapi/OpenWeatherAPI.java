@@ -12,6 +12,6 @@ import retrofit.http.Query;
 public interface OpenWeatherAPI {
 
     @GET("/weather")
-    Forecast getWeatherByLatLon(@Query("q") String city);
+    Forecast getWeatherByLatLon(@Query("id") int id);
 
 }

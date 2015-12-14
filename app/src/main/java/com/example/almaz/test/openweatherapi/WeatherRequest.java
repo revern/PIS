@@ -9,17 +9,17 @@ import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
  */
 public class WeatherRequest extends RetrofitSpiceRequest<Forecast, OpenWeatherAPI> {
 
-    private String city;
+    private int id;
 
-    public WeatherRequest(String city) {
+    public WeatherRequest(int id) {
         super(Forecast.class, OpenWeatherAPI.class);
-        this.city=city;
+        this.id=id;
     }
 
     @Override
     public Forecast loadDataFromNetwork() throws Exception {
 
-        Forecast mWeather = getService().getWeatherByLatLon(city);
+        Forecast mWeather = getService().getWeatherByLatLon(id);
         return mWeather;
     }
 }
