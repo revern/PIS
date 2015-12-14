@@ -29,16 +29,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:textSize="72dp"
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_gravity="bottom|center"
+                android:gravity="bottom|center"
                 android:textColor="@color/common_signin_btn_dark_text_default"
-                android:layout_weight="2"/>
+                android:layout_weight="3"/>
             <TextView
                 android:id="@+id/weather_city_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_gravity="top|center"
+                android:gravity="top|center"
                 android:textSize="36dp"
                 android:textColor="@color/common_signin_btn_dark_text_default"
                 android:layout_weight="1"/>
@@ -59,7 +59,7 @@
         <TextView
             android:id="@+id/weather_wind_tv"
             android:layout_width="match_parent"
-            android:textSize="36dp"
+            android:textSize="20dp"
             android:gravity="left|center"
             android:layout_marginLeft="60dp"
             android:layout_gravity="center"
@@ -83,7 +83,7 @@
         <TextView
             android:id="@+id/weather_pressure_tv"
             android:layout_width="match_parent"
-            android:textSize="36dp"
+            android:textSize="20dp"
             android:gravity="left|center"
             android:layout_marginLeft="60dp"
             android:layout_gravity="center"
@@ -108,7 +108,7 @@
             android:id="@+id/weather_humidity_tv"
             android:layout_width="match_parent"
             android:layout_gravity="center"
-            android:textSize="36dp"
+            android:textSize="20dp"
             android:gravity="left|center"
             android:layout_marginLeft="60dp"
             android:layout_height="match_parent"/>

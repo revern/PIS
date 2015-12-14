@@ -14,14 +14,14 @@
         android:id="@+id/welcome_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="36dp"
+        android:textSize="24dp"
         android:layout_margin="8dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22dp"
+        android:textSize="18dp"
         android:layout_margin="8dp"
-        android:text="Please, enter your gender and city"/>
+        android:text="@string/settings_selecting"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:orientation="horizontal"
@@ -59,16 +59,16 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:checked="true"
-                android:textSize="24dp"
+                android:textSize="20dp"
                 android:layout_margin="8dp"
-                android:text="Male"
+                android:text="@string/gender_male"
                 android:id="@+id/rbMale">
             </RadioButton>
             <RadioButton
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="Female"
-                android:textSize="24dp"
+                android:text="@string/gender_female"
+                android:textSize="20dp"
                 android:layout_margin="8dp"
                 android:id="@+id/rbFemale">
             </RadioButton>
@@ -78,7 +78,7 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="3px"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:background="@color/common_signin_btn_dark_text_disabled" />
     <Spinner
         android:id="@+id/spinner"
@@ -86,12 +86,32 @@
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content">
     </Spinner>
+    <Spinner
+        android:id="@+id/lan_spinner"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
+    </Spinner>
+    <Button
+        android:id="@+id/first_save_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_dictionaryType_add_new_d"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:textColor="#2B2B2B"
+        android:textSize="20sp"
+        android:background="@drawable/button_shape"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/save"
+        />
     <TextView
+        android:id="@+id/developer_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:paddingTop="180dp"
+        android:paddingTop="40dp"
         android:gravity="center"
-        android:text="Made from command YGRA, ITIS, 2015"/>
+        android:text="@string/authors"/>
 
 </LinearLayout>

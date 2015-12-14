@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -42,6 +44,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES = "mySettings";
     public static final String FIRST_SETTINGS = "firstSettings";
     public static final String CITY = "CITY";
+    public static final String LANGUAGE = "LANGUAGE";
+    public static final String POSITION = "POSITION";
     public static final String TEMPERATURE = "TEMPERATURE";
     public static final String WIND = "WIND";
     public static final String PRESSURE = "PRESSURE";
@@ -129,11 +134,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setElevation(0);
         sPref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if (!sPref.getBoolean(FIRST_SETTINGS, false)) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
             startActivityForResult(i, 0);
         }
+        setLanguage(sPref.getInt(LANGUAGE,0));
         mOfficialStyleButton = (TextView) findViewById(R.id.official_style_button);
         mRegularStyleButton = (TextView) findViewById(R.id.regular_style_button);
         mSportStyleButton = (TextView) findViewById(R.id.sport_style_button);
@@ -152,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         mYearView = (TextView) findViewById(R.id.year_view);
         mWeatherView = (ImageView) findViewById(R.id.weather_img_view);
         mWeatherImageView = (ImageView) findViewById(R.id.weather_img_view);
-        mCityView.setText(sPref.getString(CITY, ""));
+        mCityView.setText(getCityName(sPref.getInt(POSITION, 0)));
         dateUpdate();
 
         mRcView_1 = (RecyclerView) findViewById(R.id.rcView_1);
@@ -225,33 +232,21 @@ public class MainActivity extends AppCompatActivity {
                 if (!mTemperatureView.getText().toString().equals("") && !mTemperatureView.getText().toString().equals(null)) {
                     Intent i = new Intent(MainActivity.this, WeatherActivity.class);
                     startActivity(i);
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                    String weather = "City: " + sPref.getString(CITY, "") + "\n"
-//                            + "Temperature: " + sPref.getString(TEMPERATURE, "") + "\n"
-//                            + "Wind: " + sPref.getString(WIND, "") + "\n"
-//                            + "Pressure: " + sPref.getString(PRESSURE, "") + "\n"
-//                            + "Humidity: " + sPref.getString(HUMIDITY, "");
-//                    builder.setMessage(weather)
-//                            .setCancelable(false)
-//                            .setIcon(sPref.getInt(IMAGE, R.drawable.w01))
-//                            .setNegativeButton("OK",
-//                                    new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int id) {
-//                                            dialog.cancel();
-//                                        }
-//                                    });
-//                    AlertDialog alert = builder.create();
-//                    alert.show();
-//                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
-//                    textView.setTextSize(28);
                 }
             }
         });
+        updateButtons();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+    public void updateButtons(){
 
+        mRegularStyleButton.setText(R.string.regular);
+        mOfficialStyleButton.setText(R.string.official);
+        mEveningStyleButton.setText(R.string.evening);
+        mSportStyleButton.setText(R.string.sport);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -298,6 +293,28 @@ public class MainActivity extends AppCompatActivity {
 
     public void setStyle(String style) {
         this.style = style;
+    }
+    public void setLanguage(int position){
+        if(position==0){
+            Resources res = getApplicationContext().getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            android.content.res.Configuration conf = res.getConfiguration();
+            conf.locale = new Locale("ru");
+            res.updateConfiguration(conf, dm);
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putInt(LANGUAGE, position);
+            ed.commit();
+
+        }else{
+            Resources res = getApplicationContext().getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            android.content.res.Configuration conf = res.getConfiguration();
+            conf.locale = new Locale("en");
+            res.updateConfiguration(conf, dm);
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putInt(LANGUAGE, position);
+            ed.commit();
+        }
     }
 
     protected SpiceManager getSpiceManager() {
@@ -357,7 +374,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    public int getCityName(int i){
+        if(i==0){
+            i=R.string.kazan;
+        }else if(i==1){
+            i=R.string.moscow;
+        }else if(i==2){
+            i=R.string.new_york;
+        }else if(i==3){
+            i=R.string.london;
+        }else if(i==4){
+            i=R.string.tokyo;
+        }else if(i==5){
+            i=R.string.peking;
+        }
+        return i;
+    }
     public void setWeatherPicture() {
         int currentDrawable=R.drawable.w01;
         if (forecast.weather[0].id >= 500 && forecast.weather[0].id < 505) {
@@ -604,11 +636,13 @@ public class MainActivity extends AppCompatActivity {
 
         //body and bodyTop adding
         int minFault = 99;
+        int sportTemp=0;
+        if(style.equals("sport")){ sportTemp=5; }
         Clothes bestBody = bodyStyledClothes.get(0);
         Clothes bestBodyTop = bodyTopStyledClothes.get(0);
         for (int i = 0; i < bodyStyledClothes.size(); i++) {
             for (int j = 0; j < bodyTopStyledClothes.size(); j++) {
-                int fault = bodyStyledClothes.get(i).getTemperatureCoefficient() + bodyTopStyledClothes.get(j).getTemperatureCoefficient() + (int) forecast.main.temp - 25 - 273;
+                int fault = bodyStyledClothes.get(i).getTemperatureCoefficient() + bodyTopStyledClothes.get(j).getTemperatureCoefficient() + (int) forecast.main.temp - 25 + sportTemp - 273;
                 fault = Math.abs(fault);
                 if (fault < minFault) {
                     minFault = fault;
@@ -738,44 +772,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public String getMonthName(int month) {
-        String monthName = "";
+    public int getMonthName(int month) {
+        int monthName = R.string.january;
         switch (month) {
             case 0:
-                monthName = "January";
+                monthName = R.string.january;
                 break;
             case 1:
-                monthName = "February";
+                monthName = R.string.february;
                 break;
             case 2:
-                monthName = "March";
+                monthName = R.string.march;
                 break;
             case 3:
-                monthName = "April";
+                monthName = R.string.april;
                 break;
             case 4:
-                monthName = "May";
+                monthName = R.string.may;
                 break;
             case 5:
-                monthName = "June";
+                monthName = R.string.june;
                 break;
             case 6:
-                monthName = "July";
+                monthName = R.string.july;
                 break;
             case 7:
-                monthName = "August";
+                monthName = R.string.august;
                 break;
             case 8:
-                monthName = "September";
+                monthName = R.string.september;
                 break;
             case 9:
-                monthName = "October";
+                monthName = R.string.october;
                 break;
             case 10:
-                monthName = "November";
+                monthName = R.string.november;
                 break;
             case 11:
-                monthName = "December";
+                monthName = R.string.december;
                 break;
         }
         return monthName;
@@ -815,9 +849,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCityView.setText(sPref.getString(CITY, ""));
+        mCityView.setText(getCityName(sPref.getInt(POSITION,0)));
         sex = sPref.getString("SEX", "male");
         dateUpdate();
+        updateButtons();
         mDifference = 0;
         processLocation(sPref.getInt(ID, 0));
         clothesSet();
